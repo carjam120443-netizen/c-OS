@@ -19,5 +19,6 @@ const cos_user_t *users_find(const char *name);
 uint32_t users_current_uid(void);
 void users_set_current(uint32_t uid);
 uint8_t users_is_admin(uint32_t uid);
+int users_switch_to_root(void);
 
 #endif
