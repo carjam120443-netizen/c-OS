@@ -4,5 +4,6 @@
 
 int sudo_authorized(uint32_t uid);
 int sudo_execute(uint32_t uid, const char *command);
+int sudo_su(uint32_t uid);
 
 #endif
