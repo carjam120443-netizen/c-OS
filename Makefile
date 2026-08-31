@@ -10,10 +10,11 @@ KERNEL := $(ISO_DIR)/boot/kernel.elf
 ISO := $(BUILD)/c-OS.iso
 
 .PHONY: all kernel iso vbox run clean
-aall: iso
 all: iso
+
 $(BUILD):
 	mkdir -p $(BUILD)
+
 $(BUILD)/boot.o: boot/boot.s | $(BUILD)
 	$(AS) $< -o $@
 $(BUILD)/kernel.o: src/kernel.c src/fs.h | $(BUILD)
@@ -40,14 +41,19 @@ $(BUILD)/desktop.o: src/desktop.c src/desktop.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/desktop.c -o $@
 
 kernel: $(KERNEL)
+
 $(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $(filter-out linker.ld,$^)
+
 iso: $(KERNEL) | $(BUILD)
 	$(GRUB_MKRESCUE) -o $(ISO) $(ISO_DIR)
+
 vbox: iso
 	@echo "c-OS ISO ready for VirtualBox: $(ISO)"
+
 run: iso
 	qemu-system-i386 -cdrom $(ISO)
+
 clean:
 	rm -rf $(BUILD) $(KERNEL)
