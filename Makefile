@@ -30,11 +30,20 @@ $(BUILD)/fs.o: src/fs.c src/fs.h | $(BUILD)
 $(BUILD)/fat.o: src/fat.c src/fat.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/fat.c -o $@
 
+$(BUILD)/block.o: src/block.c src/block.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/block.c -o $@
+
+$(BUILD)/fat_disk.o: src/fat_disk.c src/fat_disk.h src/block.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/fat_disk.c -o $@
+
+$(BUILD)/fat_image.o: src/fat_image.c src/block.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/fat_image.c -o $@
+
 kernel: $(KERNEL)
 
-$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o linker.ld
+$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
-	$(LD) $(LDFLAGS) -o $@ $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o
+	$(LD) $(LDFLAGS) -o $@ $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o
 
 iso: $(KERNEL) | $(BUILD)
 	$(GRUB_MKRESCUE) -o $(ISO) $(ISO_DIR)
