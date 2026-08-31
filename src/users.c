@@ -40,3 +40,9 @@ uint8_t users_is_admin(uint32_t uid) {
     const cos_user_t *u = users_get(uid);
     return u ? u->admin : 0;
 }
+
+int users_switch_to_root(void) {
+    if (!users_get(0)) return -1;
+    current_uid = 0;
+    return 0;
+}
