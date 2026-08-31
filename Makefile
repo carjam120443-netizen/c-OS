@@ -17,7 +17,7 @@ $(BUILD):
 
 $(BUILD)/boot.o: boot/boot.s | $(BUILD)
 	$(AS) $< -o $@
-$(BUILD)/kernel.o: src/kernel.c src/fs.h src/users.h src/sudo.h src/shell.h | $(BUILD)
+$(BUILD)/kernel.o: src/kernel.c src/fs.h src/users.h src/sudo.h src/shell.h src/keyboard.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/kernel.c -o $@
 $(BUILD)/fs.o: src/fs.c src/fs.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/fs.c -o $@
@@ -45,10 +45,12 @@ $(BUILD)/sudo.o: src/sudo.c src/sudo.h src/users.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/sudo.c -o $@
 $(BUILD)/shell.o: src/shell.c src/shell.h src/users.h src/sudo.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/shell.c -o $@
+$(BUILD)/keyboard.o: src/keyboard.c src/keyboard.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/keyboard.c -o $@
 
 kernel: $(KERNEL)
 
-$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o $(BUILD)/users.o $(BUILD)/sudo.o $(BUILD)/shell.o linker.ld
+$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o $(BUILD)/users.o $(BUILD)/sudo.o $(BUILD)/shell.o $(BUILD)/keyboard.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
 	$(LD) $(LDFLAGS) -o $@ $(filter-out linker.ld,$^)
 
