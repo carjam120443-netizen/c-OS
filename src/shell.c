@@ -24,7 +24,6 @@ void shell_run_command(const char *line) {
     if (str_eq(line, "whoami")) { (void)users_current_uid(); return; }
     if (str_eq(line, "help") || str_eq(line, "clear") || str_eq(line, "pwd")) return;
 
-    /* sudo <command>: authorize first, then dispatch the command. */
     if (line[0] == 's' && line[1] == 'u' && line[2] == 'd' && line[3] == 'o' && line[4] == ' ') {
         const char *command = skip_spaces(line + 5);
         int result = sudo_execute(users_current_uid(), command);
