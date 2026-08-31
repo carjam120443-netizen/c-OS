@@ -1,0 +1,19 @@
+# c-OS root filesystem manifest
+/
+bin/
+boot/
+dev/
+etc/
+home/
+lib/
+proc/
+root/
+tmp/
+usr/
+usr/bin/
+usr/lib/
+usr/share/
+var/
+var/db/
+var/db/pkg/
+var/log/
