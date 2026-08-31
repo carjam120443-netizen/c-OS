@@ -11,12 +11,14 @@ static void copy_name(char *dst, const char *src) {
 }
 
 void users_init(void) {
-    user_count = 1;
-    current_uid = 0;
-    users[0].uid = 0;
-    users[0].gid = 0;
-    users[0].admin = 1;
+    user_count = 2;
+    current_uid = 1000;
+
+    users[0].uid = 0; users[0].gid = 0; users[0].admin = 1;
     copy_name(users[0].name, "root");
+
+    users[1].uid = 1000; users[1].gid = 1000; users[1].admin = 1;
+    copy_name(users[1].name, "cos");
 }
 
 const cos_user_t *users_get(uint32_t uid) {
@@ -44,5 +46,11 @@ uint8_t users_is_admin(uint32_t uid) {
 int users_switch_to_root(void) {
     if (!users_get(0)) return -1;
     current_uid = 0;
+    return 0;
+}
+
+int users_switch_to_user(uint32_t uid) {
+    if (!users_get(uid)) return -1;
+    current_uid = uid;
     return 0;
 }
