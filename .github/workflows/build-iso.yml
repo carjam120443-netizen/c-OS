@@ -26,7 +26,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential bison flex texinfo libgmp-dev libmpc-dev libmpfr-dev \
-            grub-pc-bin grub-common xorriso make
+            grub-pc-bin grub-common xorriso mtools dosfstools make
 
       - name: Build i686-elf cross compiler
         run: |
@@ -54,6 +54,8 @@ jobs:
           i686-elf-as --version
           i686-elf-gcc --version
           i686-elf-ld --version
+          grub-mkrescue --version
+          mformat -V
 
       - name: Build c-OS kernel
         run: make kernel
