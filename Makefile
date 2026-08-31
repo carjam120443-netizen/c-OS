@@ -10,6 +10,7 @@ KERNEL := $(ISO_DIR)/boot/kernel.elf
 ISO := $(BUILD)/c-OS.iso
 
 .PHONY: all kernel iso vbox run clean
+aall: iso
 all: iso
 $(BUILD):
 	mkdir -p $(BUILD)
@@ -35,9 +36,11 @@ $(BUILD)/fat12.o: src/fat12.c src/fat12.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/fat12.c -o $@
 $(BUILD)/ide.o: src/ide.c src/ide.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/ide.c -o $@
+$(BUILD)/desktop.o: src/desktop.c src/desktop.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/desktop.c -o $@
 
 kernel: $(KERNEL)
-$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o linker.ld
+$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
 	$(LD) $(LDFLAGS) -o $@ $^
 iso: $(KERNEL) | $(BUILD)
