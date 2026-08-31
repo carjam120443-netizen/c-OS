@@ -27,9 +27,12 @@ $(BUILD)/kernel.o: src/kernel.c src/fs.h | $(BUILD)
 $(BUILD)/fs.o: src/fs.c src/fs.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/fs.c -o $@
 
+$(BUILD)/fat.o: src/fat.c src/fat.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/fat.c -o $@
+
 kernel: $(KERNEL)
 
-$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o linker.ld
+$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
 	$(LD) $(LDFLAGS) -o $@ $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o
 
