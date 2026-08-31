@@ -11,7 +11,6 @@ ISO := $(BUILD)/c-OS.iso
 
 .PHONY: all kernel iso vbox run clean
 all: iso
-
 $(BUILD):
 	mkdir -p $(BUILD)
 
@@ -43,25 +42,22 @@ $(BUILD)/users.o: src/users.c src/users.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/users.c -o $@
 $(BUILD)/sudo.o: src/sudo.c src/sudo.h src/users.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/sudo.c -o $@
-$(BUILD)/shell.o: src/shell.c src/shell.h src/users.h src/sudo.h | $(BUILD)
+$(BUILD)/shell.o: src/shell.c src/shell.h src/users.h src/sudo.h src/pkg.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/shell.c -o $@
 $(BUILD)/keyboard.o: src/keyboard.c src/keyboard.h | $(BUILD)
 	$(CC) $(CFLAGS) -c src/keyboard.c -o $@
+$(BUILD)/pkg.o: src/pkg.c src/pkg.h src/users.h | $(BUILD)
+	$(CC) $(CFLAGS) -c src/pkg.c -o $@
 
 kernel: $(KERNEL)
-
-$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o $(BUILD)/users.o $(BUILD)/sudo.o $(BUILD)/shell.o $(BUILD)/keyboard.o linker.ld
+$(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o $(BUILD)/fs.o $(BUILD)/fat.o $(BUILD)/block.o $(BUILD)/fat_disk.o $(BUILD)/fat_image.o $(BUILD)/fat_dir.o $(BUILD)/fat_write.o $(BUILD)/fat12.o $(BUILD)/ide.o $(BUILD)/desktop.o $(BUILD)/users.o $(BUILD)/sudo.o $(BUILD)/shell.o $(BUILD)/keyboard.o $(BUILD)/pkg.o linker.ld
 	mkdir -p $(ISO_DIR)/boot
 	$(LD) $(LDFLAGS) -o $@ $(filter-out linker.ld,$^)
-
 iso: $(KERNEL) | $(BUILD)
 	$(GRUB_MKRESCUE) -o $(ISO) $(ISO_DIR)
-
 vbox: iso
 	@echo "c-OS ISO ready for VirtualBox: $(ISO)"
-
 run: iso
 	qemu-system-i386 -cdrom $(ISO)
-
 clean:
 	rm -rf $(BUILD) $(KERNEL)
