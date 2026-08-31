@@ -14,14 +14,16 @@ int sudo_authorized(uint32_t uid) {
     return users_is_admin(uid) ? 1 : 0;
 }
 
+int sudo_su(uint32_t uid) {
+    if (!sudo_authorized(uid)) return -1;
+    return users_switch_to_root();
+}
+
 int sudo_execute(uint32_t uid, const char *command) {
     if (!command || !command[0]) return -2;
     if (!sudo_authorized(uid)) return -1;
 
-    if (command_has_prefix(command, "su")) {
-        if (users_switch_to_root() != 0) return -4;
-        return 1;
-    }
+    if (command_has_prefix(command, "su")) return sudo_su(uid);
 
     if (command_has_prefix(command, "whoami") ||
         command_has_prefix(command, "pwd") ||
