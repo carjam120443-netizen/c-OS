@@ -11,7 +11,7 @@ ISO_DIR := iso
 KERNEL := $(ISO_DIR)/boot/kernel.elf
 ISO := $(BUILD)/c-OS.iso
 
-.PHONY: all kernel iso run clean
+.PHONY: all kernel iso vbox run clean
 
 all: iso
 
@@ -33,6 +33,12 @@ $(KERNEL): $(BUILD)/boot.o $(BUILD)/kernel.o linker.ld
 iso: $(KERNEL) | $(BUILD)
 	$(GRUB_MKRESCUE) -o $(ISO) $(ISO_DIR)
 
+# Build the bootable ISO for use with VirtualBox.
+vbox: iso
+	@echo "c-OS ISO ready for VirtualBox: $(ISO)"
+	@echo "Create a VM named c-OS and attach $(ISO) as its optical disk."
+
+# Optional QEMU target for quick testing.
 run: iso
 	qemu-system-i386 -cdrom $(ISO)
 
