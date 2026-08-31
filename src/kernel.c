@@ -67,9 +67,10 @@ void kmain(void) {
     terminal_write("\nc-OS interactive terminal\n");
     terminal_prompt();
 
+    /* Polling terminal: keep the CPU running so keyboard_poll() can see new
+       PS/2 bytes. HLT is intentionally not used until keyboard IRQs exist. */
     for (;;) {
         keyboard_poll();
         while (keyboard_has_key()) terminal_process_key(keyboard_getchar());
-        __asm__ volatile ("hlt");
     }
 }
