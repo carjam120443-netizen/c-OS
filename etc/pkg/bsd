@@ -1,0 +1,6 @@
+# c-OS OpenBSD-compatible repository configuration
+# This file is intentionally a repository definition, not a claim that
+# OpenBSD binary packages can be installed directly into c-OS.
+#
+# Format: name|base-url|enabled
+openbsd-main|https://cdn.openbsd.org/pub/OpenBSD|1
