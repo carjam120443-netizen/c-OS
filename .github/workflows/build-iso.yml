@@ -1,0 +1,42 @@
+name: Build c-OS ISO
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-multilib \
+            binutils \
+            grub-pc-bin \
+            grub-common \
+            xorriso \
+            make
+
+      - name: Build c-OS kernel
+        run: make kernel
+
+      - name: Build bootable ISO
+        run: make iso
+
+      - name: Upload c-OS ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: c-OS-iso
+          path: build/c-OS.iso
+          if-no-files-found: error
